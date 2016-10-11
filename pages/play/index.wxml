@@ -1,0 +1,19 @@
+<audio src="{{src}}" action="{{action}}" binderror="errorEvent" bindplay="playEvent" bindpause="pauseEvent" bindtimeupdate="timeupdateEvent" bindended="endEvent"></audio>
+
+<scroll-view scroll-y="true">
+	<image class="play-bg" mode="aspectFill" src="{{picurl}}"></image>
+	<view class="play-container">
+		<view wx:for="{{lyricList}}" class="lyric" id="{{item.time}}">
+			<text wx:if="{{item.en}}">{{item.en}}</text>
+			<text>{{item.zh}}</text>
+		</view>
+	</view>
+</scroll-view>
+<view class="footer">
+  	<view class="controls">
+	    <view class="btn btn-prev" bindtap="prev" style="background-image:url(../../images/prev.png)"></view>
+	    <view class="btn btn-play" bindtap="play_pause" style="background-image:url(../../images/{{status}}.png)"></view>
+	    <view class="btn btn-next" bindtap="next" style="background-image:url(../../images/next.png)"></view>
+  		<view class="btn btn-mode" bindtap="switchMode" style="background-image:url(../../images/{{mode}}.png)"></view>
+  	</view>
+</view>

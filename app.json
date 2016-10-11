@@ -1,13 +1,12 @@
 {
   "pages": [
     "pages/recommend/index",
+    "pages/play/index",
     "pages/my/index"
-
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#bb2c08",
-    "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
