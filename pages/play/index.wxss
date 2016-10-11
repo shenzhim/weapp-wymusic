@@ -28,6 +28,7 @@ scroll-view {
 	padding-right: 15px;
 	margin-bottom: 60rpx;
 	color: #d0d0d0;
+	transition: all .5s;
 }
 
 .lyric.selected {
@@ -50,7 +51,7 @@ scroll-view {
 }
 
 .controls {
-  	padding: 5px 0;
+  	padding: 10px 0;
   	width: 70%;
   	margin: 0 auto;
   	display: flex;
@@ -59,15 +60,14 @@ scroll-view {
 	align-items: center;
 }
 
-.btn{
+.controls image {
   display: block;
   width: 40px;
   height: 40px;
   margin: 0 5px;
-  background-size: 100%;
 }
 
-.btn-mode{
+.controls .mode{
   position: absolute;
   width: 24px;
   height: 24px;
