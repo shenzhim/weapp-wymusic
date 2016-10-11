@@ -13,7 +13,7 @@ Page({
 		var song = data[param.id] || {};
 
 		this.setData({
-			title: param.name,
+			title: song.name,
 			picurl: song.album.picUrl,
 			src: song.mp3Url,
 			action: {

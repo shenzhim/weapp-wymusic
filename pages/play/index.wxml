@@ -11,7 +11,7 @@
 <view class="footer">
   	<view class="controls">
   		<image mode="scaleToFill" bindtap="prevEvent" src="../../images/prev.png" />
-  		<image mode="scaleToFill" bindtap="actionEvent" src="../../images/{{status}}.png" />
+  		<image mode="scaleToFill" bindtap="actionEvent" src="../../images/{{status === 'play' ? 'pause' : 'play'}}.png" />
   		<image mode="scaleToFill" bindtap="nextEvent" src="../../images/next.png" />
   		<image class="mode" mode="scaleToFill" bindtap="switchModeEvent" src="../../images/{{mode}}.png" />
   	</view>

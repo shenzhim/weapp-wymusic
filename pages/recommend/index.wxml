@@ -7,7 +7,7 @@
 </swiper>
 <scroll-view scroll-y="true" class="container">
 	<block wx:for="{{recommends}}" wx:for-item="song">
-		<view class="block" bindtap="playTap" data-id="{{song.id}}" data-name="{{song.name}}">
+		<view class="block" bindtap="playTap" data-id="{{song.id}}">
 			<view class="left">
 				<image src="{{song.album.picUrl}}" mode="aspectFill"/>
 			</view>

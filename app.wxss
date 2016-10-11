@@ -24,15 +24,13 @@ image,
 video,
 map,
 canvas {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .hide {
-  display: none!important;
+	display: none!important;
 }
 
-.container,
-input,
-button {
-  font: 14px "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+page {
+	font-family: "Helvetica", "Arial", sans-serif;
 }
