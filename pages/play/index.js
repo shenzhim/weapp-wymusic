@@ -2,30 +2,15 @@ var data = require('../../utils/data.js').songs;
 var strRe = /\[(\d{2}:\d{2})\.\d{2,}\](.*)/;
 
 Page({
-	data: {
-		status: 'play',
-		mode: 'loop',
-		currentTime: '0',
-		currentIndex: 0,
-		animationData: {}
-	},
+	data: {},
 	onLoad: function(param) {
-		var song = data[param.id] || {};
-
 		this.setData({
-			title: song.name,
-			picurl: song.album.picUrl,
-			src: song.mp3Url,
-			action: {
-				method: this.data.status
-			},
-			lyricList: this.getLyricList(song)
+			currentId: param.id
 		})
+		this.idsMap = wx.getStorageSync('ids') || {};
 	},
 	onReady: function() {
-		wx.setNavigationBarTitle({
-			title: this.data.title
-		})
+		this.reload(this.data.currentId);
 	},
 	onShow: function() {
 		var animation = wx.createAnimation({
@@ -39,7 +24,7 @@ Page({
 		console.log("加载资源失败 code：", e.detail.errMsg);
 	},
 	prevEvent: function(e) {
-
+		this.reload(this.idsMap[Number(this.data.currentId)].preid);
 	},
 	actionEvent: function(e) {
 		var method = this.data.status === 'play' ? 'pause' : 'play';
@@ -52,7 +37,7 @@ Page({
 		})
 	},
 	nextEvent: function(e) {
-
+		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
 	},
 	switchModeEvent: function(e) {
 
@@ -78,6 +63,28 @@ Page({
 	},
 	endEvent: function(e) {
 
+	},
+	reload: function(id) {
+		var song = data[id] || {};
+		this.setData({
+			status: 'play',
+			mode: 'loop',
+			currentId: id,
+			currentTime: '0',
+			currentIndex: 0,
+			animationData: {},
+			title: song.name,
+			picurl: song.album.picUrl,
+			src: song.mp3Url,
+			action: {
+				method: 'play'
+			},
+			lyricList: this.getLyricList(song)
+		});
+
+		wx.setNavigationBarTitle({
+			title: song.name
+		})
 	},
 	getLyricList: function(song) {
 		var obj = {},
