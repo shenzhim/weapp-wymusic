@@ -2,12 +2,15 @@ var data = require('../../utils/data.js').songs;
 var strRe = /\[(\d{2}:\d{2})\.\d{2,}\](.*)/;
 
 Page({
-	data: {},
+	data: {
+		toastHidden: true
+	},
 	onLoad: function(param) {
 		this.setData({
 			currentId: param.id
 		})
 		this.idsMap = wx.getStorageSync('ids') || {};
+		this.idsArr = Object.keys(this.idsMap);
 	},
 	onReady: function() {
 		this.reload(this.data.currentId);
@@ -17,7 +20,6 @@ Page({
 			duration: 1000,
 			timingFunction: 'ease',
 		})
-
 		this.animation = animation
 	},
 	errorEvent: function(e) {
@@ -32,7 +34,6 @@ Page({
 	},
 	actionEvent: function(e) {
 		var method = this.data.status === 'play' ? 'pause' : 'play';
-
 		this.setData({
 			status: method,
 			action: {
@@ -41,15 +42,29 @@ Page({
 		})
 	},
 	switchModeEvent: function(e) {
-
+		var newMode = 'loop';
+		var toastMsg = "列表循环";
+		if (this.data.mode === 'loop') {
+			newMode = 'single';
+			toastMsg = "单曲循环";
+		} else if (this.data.mode === 'single') {
+			newMode = 'random';
+			toastMsg = "随机播放";
+		}
+		this.setData({
+			mode: newMode,
+			toastMsg: toastMsg,
+			toastHidden: false
+		})
 	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
+			d = e.detail.duration,
 			list = this.data.lyricList,
 			cIndex = this.data.currentIndex;
 
 		if (cIndex < list.length - 1 && t >= list[cIndex + 1].time) {
-			this.animation.translateY(-50 * (cIndex + 1)).step();
+			this.animation.translateY(-55 * (cIndex + 1)).step();
 
 			this.setData({
 				currentTime: t,
@@ -57,9 +72,20 @@ Page({
 				animationData: this.animation.export()
 			});
 		}
+
+		this.setData({
+			per: Math.floor(t / d * 100),
+			timeText: this.formatTime(t),
+			durationText: this.formatTime(d)
+		});
 	},
 	endEvent: function(e) {
-		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
+		this.reload(this.getNextSongId());
+	},
+	toastChange: function(e) {
+		this.setData({
+			toastHidden: true
+		});
 	},
 	reload: function(id) {
 		var song = data[id] || {};
@@ -68,11 +94,15 @@ Page({
 			delay: 100
 		});
 		this.setData({
+			per: 0,
 			status: 'play',
-			mode: 'loop',
+			toastHidden: true,
+			mode: this.data.mode || 'loop',
 			currentId: id,
 			currentTime: '0',
 			currentIndex: 0,
+			timeText: '00:00',
+			durationText: '',
 			animationData: this.animation.export(),
 			title: song.name,
 			picurl: song.album.picUrl,
@@ -95,6 +125,15 @@ Page({
 				}
 			})
 		}, 1);
+	},
+	getNextSongId: function() {
+		if (this.data.mode === 'single') {
+			return this.data.currentId;
+		} else if (this.data.mode === 'random') {
+			return idsArr[Math.floor(Math.random() * idsArr.length)]
+		} else if (this.data.mode === 'loop') {
+			return this.idsMap[Number(this.data.currentId)].nextid;
+		}
 	},
 	getLyricList: function(song) {
 		var obj = {},
@@ -140,5 +179,15 @@ Page({
 		}
 
 		return lyricList;
+	},
+	formatTime: function(time) {
+		time = Math.floor(time);
+		var m = Math.floor(time / 60).toString();
+		m = m.length < 2 ? '0' + m : m;
+
+		var s = (time - parseInt(m) * 60).toString();
+		s = s.length < 2 ? '0' + s : s;
+
+		return `${m}:${s}`;
 	}
 })

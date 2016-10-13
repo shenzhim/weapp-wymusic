@@ -50,6 +50,24 @@ page {
  	color: #fff;
 }
 
+.progress {
+	padding-top: 10px; 
+	display: flex;
+  	flex-direction: row;
+  	justify-content: space-around;
+	align-items: center;
+}
+
+.progress text {
+	font-size: 10px;
+	width: 12%;
+	text-align: center;
+}
+
+.progress progress {
+	width: 76%;
+}
+
 .controls {
   	padding: 10px 0;
   	width: 70%;
