@@ -1,5 +1,6 @@
-scroll-view {
-	height: 100%;
+page {
+	overflow: hidden;
+	background: rgba(0,0,0,0.5);
 }
 
 .play-bg {
@@ -9,7 +10,7 @@ scroll-view {
 	position: fixed;
 	top: 0;
 	left: 0;
-	opacity: 0.2;
+	opacity: 0.4;
 }
 
 .play-container {
@@ -18,7 +19,6 @@ scroll-view {
 	align-items: center;
 	box-sizing: border-box;
 	margin-top: 350rpx;
-	margin-bottom: 80rpx;
 }
 
 .lyric {

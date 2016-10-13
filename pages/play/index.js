@@ -22,9 +22,13 @@ Page({
 	},
 	errorEvent: function(e) {
 		console.log("加载资源失败 code：", e.detail.errMsg);
+		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
 	},
 	prevEvent: function(e) {
 		this.reload(this.idsMap[Number(this.data.currentId)].preid);
+	},
+	nextEvent: function(e) {
+		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
 	},
 	actionEvent: function(e) {
 		var method = this.data.status === 'play' ? 'pause' : 'play';
@@ -36,55 +40,61 @@ Page({
 			}
 		})
 	},
-	nextEvent: function(e) {
-		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
-	},
 	switchModeEvent: function(e) {
 
 	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
 			list = this.data.lyricList,
-			currentIndex = this.data.currentIndex;
+			cIndex = this.data.currentIndex;
 
-		for (var i = 0; i < list.length; i++) {
-			if (list[i].time <= t && list[i].endtime > t && currentIndex !== i) {
-				this.animation.translateY(-(50 * i)).step();
+		if (cIndex < list.length - 1 && t >= list[cIndex + 1].time) {
+			this.animation.translateY(-50 * (cIndex + 1)).step();
 
-				this.setData({
-					currentTime: t,
-					currentIndex: i,
-					animationData: this.animation.export()
-				});
-
-				break;
-			}
+			this.setData({
+				currentTime: t,
+				currentIndex: cIndex + 1,
+				animationData: this.animation.export()
+			});
 		}
 	},
 	endEvent: function(e) {
-
+		this.reload(this.idsMap[Number(this.data.currentId)].nextid);
 	},
 	reload: function(id) {
 		var song = data[id] || {};
+		this.animation.translateY(0).step({
+			duration: 1000,
+			delay: 100
+		});
 		this.setData({
 			status: 'play',
 			mode: 'loop',
 			currentId: id,
 			currentTime: '0',
 			currentIndex: 0,
-			animationData: {},
+			animationData: this.animation.export(),
 			title: song.name,
 			picurl: song.album.picUrl,
 			src: song.mp3Url,
 			action: {
-				method: 'play'
+				method: 'setCurrentTime',
+				data: 0
 			},
 			lyricList: this.getLyricList(song)
 		});
 
 		wx.setNavigationBarTitle({
 			title: song.name
-		})
+		});
+
+		setTimeout(() => {
+			this.setData({
+				action: {
+					method: 'play'
+				}
+			})
+		}, 1);
 	},
 	getLyricList: function(song) {
 		var obj = {},
@@ -97,7 +107,7 @@ Page({
 			if (!arr) return;
 
 			var k = arr[1],
-				v = arr[2];
+				v = arr[2] || '(music)';
 
 			if (!obj[k]) obj[k] = {};
 			obj[k].zh = v;
@@ -108,7 +118,7 @@ Page({
 			if (!arr) return;
 
 			var k = arr[1],
-				v = arr[2];
+				v = arr[2] || '(music)';
 
 			if (!obj[k]) obj[k] = {};
 			obj[k].en = v;

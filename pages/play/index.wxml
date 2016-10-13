@@ -1,13 +1,11 @@
+<image class="play-bg" mode="aspectFill" src="{{picurl}}"></image>
 <audio src="{{src}}" action="{{action}}" binderror="errorEvent" bindtimeupdate="timeupdateEvent" bindended="endEvent"></audio>
-<scroll-view scroll-y="true">
-	<image class="play-bg" mode="aspectFill" src="{{picurl}}"></image>
-	<view class="play-container" animation="{{animationData}}">
-		<view wx:for="{{lyricList}}" class="lyric {{item.time <= currentTime && item.endtime > currentTime ? 'selected' : ''}}">
-			<text wx:if="{{item.en}}">{{item.en}}</text>
-			<text wx:if="{{item.zh}}">{{item.zh}}</text>
-		</view>
+<view id="container" class="play-container" animation="{{animationData}}">
+	<view wx:for="{{lyricList}}" class="lyric {{item.time <= currentTime && item.endtime > currentTime ? 'selected' : ''}}">
+		<text wx:if="{{item.en}}">{{item.en}}</text>
+		<text wx:if="{{item.zh}}">{{item.zh}}</text>
 	</view>
-</scroll-view>
+</view>
 <view class="footer">
   	<view class="controls">
   		<image mode="scaleToFill" bindtap="prevEvent" src="../../images/prev.png" />
