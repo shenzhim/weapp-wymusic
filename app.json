@@ -24,6 +24,5 @@
       "iconPath": "images/my.png",
       "selectedIconPath": "images/my-active.png"
     }]
-  },
-  "debug": true
+  }
 }

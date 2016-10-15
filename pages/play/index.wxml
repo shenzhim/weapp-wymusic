@@ -1,6 +1,7 @@
-<image class="play-bg" mode="aspectFill" src="{{picurl}}"></image>
 <audio src="{{src}}" action="{{action}}" binderror="errorEvent" bindtimeupdate="timeupdateEvent" bindended="endEvent"></audio>
-<view id="container" class="play-container" animation="{{animationData}}">
+<image class="play-bg" mode="aspectFill" src="{{picurl}}" ></image>
+<image wx:if="{{lyricHidden}}" bindtap="switchbgEvent" class="trun-bg" mode="aspectFill" src="{{picurl}}" style="transform: translateX(-50%) rotate({{deg}}deg);"></image>
+<view wx:if="{{!lyricHidden}}" id="container" class="play-container" animation="{{animationData}}" bindtap="switchbgEvent">
 	<view wx:for="{{lyricList}}" class="lyric {{item.time <= currentTime && item.endtime > currentTime ? 'selected' : ''}}">
 		<text wx:if="{{item.en}}">{{item.en}}</text>
 		<text wx:if="{{item.zh}}">{{item.zh}}</text>

@@ -16,11 +16,16 @@ Page({
 		this.reload(this.data.currentId);
 	},
 	onShow: function() {
-		var animation = wx.createAnimation({
+		this.animation = wx.createAnimation({
 			duration: 1000,
 			timingFunction: 'ease',
-		})
-		this.animation = animation
+		});
+	},
+	onHide: function() {
+		this.clearTurner();
+	},
+	onUnload: function() {
+		this.clearTurner();
 	},
 	errorEvent: function(e) {
 		console.log("加载资源失败 code：", e.detail.errMsg);
@@ -39,7 +44,9 @@ Page({
 			action: {
 				method: method
 			}
-		})
+		});
+
+		if (method === 'pause') this.clearTurner();
 	},
 	switchModeEvent: function(e) {
 		var newMode = 'loop';
@@ -57,14 +64,20 @@ Page({
 			toastHidden: false
 		})
 	},
+	switchbgEvent: function(e) {
+		this.setData({
+			lyricHidden: !this.data.lyricHidden
+		});
+	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
 			d = e.detail.duration,
+			step = this.isEnSong ? 80 : 55,
 			list = this.data.lyricList,
 			cIndex = this.data.currentIndex;
 
 		if (cIndex < list.length - 1 && t >= list[cIndex + 1].time) {
-			this.animation.translateY(-55 * (cIndex + 1)).step();
+			this.animation.translateY(-step * (cIndex + 1)).step();
 
 			this.setData({
 				currentTime: t,
@@ -78,6 +91,14 @@ Page({
 			timeText: this.formatTime(t),
 			durationText: this.formatTime(d)
 		});
+
+		if (!this.turner && this.data.status === 'play') {
+			this.turner = setInterval(() => {
+				this.setData({
+					deg: this.data.deg + 1,
+				})
+			}, 50);
+		}
 	},
 	endEvent: function(e) {
 		this.reload(this.getNextSongId());
@@ -89,18 +110,22 @@ Page({
 	},
 	reload: function(id) {
 		var song = data[id] || {};
+
+		this.clearTurner();
 		this.animation.translateY(0).step({
 			duration: 1000,
 			delay: 100
 		});
 		this.setData({
 			per: 0,
+			deg: 0,
 			status: 'play',
+			lyricHidden: true,
 			toastHidden: true,
 			mode: this.data.mode || 'loop',
 			currentId: id,
 			currentTime: '0',
-			currentIndex: 0,
+			currentIndex: -1,
 			timeText: '00:00',
 			durationText: '',
 			animationData: this.animation.export(),
@@ -124,7 +149,7 @@ Page({
 					method: 'play'
 				}
 			})
-		}, 1);
+		}, 100);
 	},
 	getNextSongId: function() {
 		if (this.data.mode === 'single') {
@@ -151,6 +176,11 @@ Page({
 			if (!obj[k]) obj[k] = {};
 			obj[k].zh = v;
 		});
+		if (en.length) {
+			this.isEnSong = true;
+		} else {
+			this.isEnSong = false;
+		}
 
 		en.forEach(function(str) {
 			var arr = str.match(strRe);
@@ -179,6 +209,12 @@ Page({
 		}
 
 		return lyricList;
+	},
+	clearTurner: function() {
+		if (this.turner) {
+			clearInterval(this.turner);
+			this.turner = null;
+		}
 	},
 	formatTime: function(time) {
 		time = Math.floor(time);
