@@ -72,7 +72,7 @@ Page({
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
 			d = e.detail.duration,
-			step = this.isEnSong ? 80 : 55,
+			step = this.isEnSong ? 78 : 55,
 			list = this.data.lyricList,
 			cIndex = this.data.currentIndex;
 
