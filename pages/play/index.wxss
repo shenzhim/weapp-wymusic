@@ -89,15 +89,22 @@ page {
 }
 
 .controls image {
-  display: block;
-  width: 40px;
-  height: 40px;
-  margin: 0 5px;
+  	display: block;
+  	width: 40px;
+  	height: 40px;
+  	margin: 0 5px;
 }
 
 .controls .mode{
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  right: 15px;
+  	position: absolute;
+  	width: 24px;
+  	height: 24px;
+  	left: 15px;
+}
+
+.controls .fav {
+	position: absolute;
+  	width: 24px;
+  	height: 24px;
+  	right: 15px;	
 }

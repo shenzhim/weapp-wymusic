@@ -69,6 +69,19 @@ Page({
 			lyricHidden: !this.data.lyricHidden
 		});
 	},
+	favEvent: function(e) {
+		if (this.data.fav === 'like') {
+			this.setData({
+				fav: 'liked'
+			});
+			wx.setStorageSync('fav_' + this.data.currentId, true);
+		} else {
+			this.setData({
+				fav: 'like'
+			});
+			wx.setStorageSync('fav_' + this.data.currentId, false);
+		}
+	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
 			d = e.detail.duration,
@@ -122,6 +135,7 @@ Page({
 			status: 'play',
 			lyricHidden: true,
 			toastHidden: true,
+			fav: wx.getStorageSync('fav_' + id) ? 'liked' : 'like',
 			mode: this.data.mode || 'loop',
 			currentId: id,
 			currentTime: '0',
