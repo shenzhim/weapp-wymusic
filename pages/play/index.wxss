@@ -1,6 +1,6 @@
 page {
 	overflow: hidden;
-	background: rgba(0,0,0,0.5);
+	background: radial-gradient(rgba(0,0,0,.5) 30%, rgba(0,0,0,1));
 }
 
 .play-bg {
