@@ -2,7 +2,8 @@
 	<block wx:for="{{favlist}}">
 		<view class="block" bindtap="playTap" data-name="{{item.name}}">
 			<view class="left">
-				<image src="{{item.picurl}}" mode="aspectFill"/>
+				<image wx:if="{{item.picurl}}" src="{{item.picurl}}" mode="aspectFit"/>
+				<image class="default" wx:else src="../../images/default.png" mode="aspectFit"/>
 			</view>
 			<view class="right">
 				<view class="content">
