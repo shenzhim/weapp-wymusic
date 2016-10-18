@@ -70,17 +70,50 @@ Page({
 		});
 	},
 	favEvent: function(e) {
+		var id = this.data.currentId,
+			fav = wx.getStorageSync('fav') || {},
+			favlist = wx.getStorageSync('favlist') || {};
+
 		if (this.data.fav === 'like') {
 			this.setData({
-				fav: 'liked'
+				fav: 'liked',
+				toastMsg: '收藏成功',
+				toastHidden: false
 			});
-			wx.setStorageSync('fav_' + this.data.currentId, true);
+
+			var favName = '我喜欢的音乐';
+			fav[id] = favName;
+
+			if (!favlist[favName]) favlist[favName] = {
+				picurl: '',
+				list: []
+			}
+
+			var favData = favlist[favName];
+			favData.picurl = data[id].album.picUrl;
+			favData.list.push(id);
 		} else {
 			this.setData({
 				fav: 'like'
 			});
-			wx.setStorageSync('fav_' + this.data.currentId, false);
+
+			var favName = fav[id];
+			var favData = favlist[favName];
+
+			delete fav[id];
+			if (favData) {
+				favData.list.splice(favData.list.indexOf(id), 1);
+
+				if (favData.list.length) {
+					favData.picurl = data[favData.list[favData.list.length - 1]].album.picUrl;
+				} else {
+					favData.picurl = '';
+				}
+			}
 		}
+
+		wx.setStorageSync('fav', fav);
+		wx.setStorageSync('favlist', favlist);
 	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
@@ -135,7 +168,7 @@ Page({
 			status: 'play',
 			lyricHidden: true,
 			toastHidden: true,
-			fav: wx.getStorageSync('fav_' + id) ? 'liked' : 'like',
+			fav: wx.getStorageSync('fav')[id] ? 'liked' : 'like',
 			mode: this.data.mode || 'loop',
 			currentId: id,
 			currentTime: '0',

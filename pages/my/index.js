@@ -1,14 +1,22 @@
-//logs.js
-var util = require('../../utils/util.js')
 Page({
-  data: {
-    logs: []
-  },
-  onLoad: function () {
-    this.setData({
-      logs: (wx.getStorageSync('logs') || []).map(function (log) {
-        return util.formatTime(new Date(log))
-      })
-    })
-  }
+    data: {},
+    onLoad: function() {
+        var favList = [];
+        var data = wx.getStorageSync('favlist');
+
+        Object.keys(data).forEach(function(key) {
+            favList.push({
+                picurl: data[key].picurl,
+                name: key,
+                count: data[key].list.length
+            });
+        });
+
+        this.setData({
+            favlist: favList
+        })
+    },
+    playTap: function(e) {
+
+    }
 })

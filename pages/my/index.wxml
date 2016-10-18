@@ -1,6 +1,19 @@
-<!--logs.wxml-->
-<view class="container log-list">
-  <block wx:for="{{logs}}" wx:for-item="log">
-    <text class="log-item">{{index + 1}}. {{log}}</text>
-  </block>
+<view class="container">
+	<block wx:for="{{favlist}}">
+		<view class="block" bindtap="playTap" data-name="{{item.name}}">
+			<view class="left">
+				<image src="{{item.picurl}}" mode="aspectFill"/>
+			</view>
+			<view class="right">
+				<view class="content">
+					<view>
+						<text class="fav-name">{{item.name}}</text>	
+					</view>
+					<view>
+						<text class="fav-count">共{{item.count}}首</text>
+					</view>
+				</view>
+			</view>
+		</view>	
+	</block>
 </view>
