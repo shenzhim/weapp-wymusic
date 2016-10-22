@@ -94,41 +94,20 @@ Page({
 				favData.picurl = '';
 			}
 		}
+
 		wx.setStorageSync('fav', fav);
 		wx.setStorageSync('favlist', favlist);
 
 		this.setData({
-			fav: 'unlike'
+			fav: 'unlike',
+			favlist: favUtil.getFavList()
 		});
 	},
 	addFavItem: function(e) {
-
+		this.addFav(e.detail.value);
 	},
 	favItemTap: function(e) {
-		var id = this.data.currentId,
-			fav = wx.getStorageSync('fav') || {},
-			favlist = wx.getStorageSync('favlist') || {},
-			favName = e.currentTarget.dataset.name;
-
-		fav[id] = favName;
-		if (!favlist[favName]) favlist[favName] = {
-			picurl: '',
-			list: []
-		}
-
-		var favData = favlist[favName];
-		favData.picurl = data[id].album.picUrl;
-		favData.list.push(id);
-
-		this.setData({
-			fav: 'liked',
-			toastMsg: '收藏成功',
-			toastHidden: false,
-			favHidden: true
-		});
-
-		wx.setStorageSync('fav', fav);
-		wx.setStorageSync('favlist', favlist);
+		this.addFav(e.currentTarget.dataset.name);
 	},
 	actionSheetChange: function(e) {
 		this.setData({
@@ -284,6 +263,36 @@ Page({
 			clearInterval(this.turner);
 			this.turner = null;
 		}
+	},
+	addFav: function(favName) {
+		if (!favName) {
+			return;
+		}
+
+		var id = this.data.currentId,
+			fav = wx.getStorageSync('fav') || {},
+			favlist = wx.getStorageSync('favlist') || {};
+
+		fav[id] = favName;
+		if (!favlist[favName]) favlist[favName] = {
+			picurl: '',
+			list: []
+		}
+
+		var favData = favlist[favName];
+		favData.picurl = data[id].album.picUrl;
+		favData.list.push(id);
+
+		wx.setStorageSync('fav', fav);
+		wx.setStorageSync('favlist', favlist);
+
+		this.setData({
+			fav: 'liked',
+			toastMsg: '收藏成功',
+			toastHidden: false,
+			favHidden: true,
+			favlist: favUtil.getFavList()
+		});
 	},
 	formatTime: function(time) {
 		time = Math.floor(time);

@@ -23,8 +23,8 @@
 </view>
 <toast hidden="{{toastHidden}}" duration="2000" bindchange="toastChange">{{toastMsg}}</toast>
 <action-sheet hidden="{{favHidden}}" bindchange="actionSheetChange">
-	<action-sheet-item class="addfavitem" bindtap="addFavItem">
-		<text class="fav-name">＋ 新建收藏夹</text>
+	<action-sheet-item>
+		<input placeholder="＋ 新建收藏夹" placeholder-style="margin:0 auto;" maxlength="10" bindchange="addFavItem"/>
 	</action-sheet-item>
 	<block wx:for="{{favlist}}">
     	<action-sheet-item class="favitem" bindtap="favItemTap" data-name="{{item.name}}">
@@ -42,5 +42,5 @@
 			</view>
     	</action-sheet-item>
   	</block>
-  	<action-sheet-cancel class="favcancel">取消</action-sheet-cancel>
+  	<action-sheet-cancel>取消</action-sheet-cancel>
 </action-sheet>
