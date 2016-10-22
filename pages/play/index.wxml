@@ -22,3 +22,25 @@
   	</view>
 </view>
 <toast hidden="{{toastHidden}}" duration="2000" bindchange="toastChange">{{toastMsg}}</toast>
+<action-sheet hidden="{{favHidden}}" bindchange="actionSheetChange">
+	<action-sheet-item class="addfavitem" bindtap="addFavItem">
+		<text class="fav-name">＋ 新建收藏夹</text>
+	</action-sheet-item>
+	<block wx:for="{{favlist}}">
+    	<action-sheet-item class="favitem" bindtap="favItemTap" data-name="{{item.name}}">
+    		<view class="left">
+				<image wx:if="{{item.picurl}}" src="{{item.picurl}}" mode="aspectFit"/>
+				<image class="default" wx:else src="../../images/default.png" mode="aspectFit"/>
+			</view>
+			<view class="right">
+				<view>
+					<text class="fav-name">{{item.name}}</text>	
+				</view>
+				<view>
+					<text class="fav-count">共{{item.count}}首</text>
+				</view>
+			</view>
+    	</action-sheet-item>
+  	</block>
+  	<action-sheet-cancel class="favcancel">取消</action-sheet-cancel>
+</action-sheet>

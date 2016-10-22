@@ -6,13 +6,11 @@
 				<image class="default" wx:else src="../../images/default.png" mode="aspectFit"/>
 			</view>
 			<view class="right">
-				<view class="content">
-					<view>
-						<text class="fav-name">{{item.name}}</text>	
-					</view>
-					<view>
-						<text class="fav-count">共{{item.count}}首</text>
-					</view>
+				<view>
+					<text class="fav-name">{{item.name}}</text>	
+				</view>
+				<view>
+					<text class="fav-count">共{{item.count}}首</text>
 				</view>
 			</view>
 		</view>	

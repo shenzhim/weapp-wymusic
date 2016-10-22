@@ -1,4 +1,5 @@
 var data = require('../../utils/data.js').songs;
+var favUtil = require('../../utils/fav.js');
 var strRe = /\[(\d{2}:\d{2})\.\d{2,}\](.*)/;
 
 Page({
@@ -70,50 +71,69 @@ Page({
 		});
 	},
 	favEvent: function(e) {
+		if (this.data.fav === 'unlike') {
+			this.setData({
+				favHidden: false
+			});
+			return;
+		}
+
 		var id = this.data.currentId,
 			fav = wx.getStorageSync('fav') || {},
-			favlist = wx.getStorageSync('favlist') || {};
+			favName = fav[id],
+			favlist = wx.getStorageSync('favlist') || {},
+			favData = favlist[favName];
 
-		if (this.data.fav === 'like') {
-			this.setData({
-				fav: 'liked',
-				toastMsg: '收藏成功',
-				toastHidden: false
-			});
+		delete fav[id];
+		if (favData) {
+			favData.list.splice(favData.list.indexOf(id), 1);
 
-			var favName = '我喜欢的音乐';
-			fav[id] = favName;
-
-			if (!favlist[favName]) favlist[favName] = {
-				picurl: '',
-				list: []
-			}
-
-			var favData = favlist[favName];
-			favData.picurl = data[id].album.picUrl;
-			favData.list.push(id);
-		} else {
-			this.setData({
-				fav: 'like'
-			});
-
-			var favName = fav[id];
-			var favData = favlist[favName];
-
-			delete fav[id];
-			if (favData) {
-				favData.list.splice(favData.list.indexOf(id), 1);
-
-				if (favData.list.length) {
-					favData.picurl = data[favData.list[favData.list.length - 1]].album.picUrl;
-				} else {
-					favData.picurl = '';
-				}
+			if (favData.list.length) {
+				favData.picurl = data[favData.list[favData.list.length - 1]].album.picUrl;
+			} else {
+				favData.picurl = '';
 			}
 		}
+		wx.setStorageSync('fav', fav);
+		wx.setStorageSync('favlist', favlist);
+
+		this.setData({
+			fav: 'unlike'
+		});
+	},
+	addFavItem: function(e) {
+
+	},
+	favItemTap: function(e) {
+		var id = this.data.currentId,
+			fav = wx.getStorageSync('fav') || {},
+			favlist = wx.getStorageSync('favlist') || {},
+			favName = e.currentTarget.dataset.name;
+
+		fav[id] = favName;
+		if (!favlist[favName]) favlist[favName] = {
+			picurl: '',
+			list: []
+		}
+
+		var favData = favlist[favName];
+		favData.picurl = data[id].album.picUrl;
+		favData.list.push(id);
+
+		this.setData({
+			fav: 'liked',
+			toastMsg: '收藏成功',
+			toastHidden: false,
+			favHidden: true
+		});
 
 		wx.setStorageSync('fav', fav);
 		wx.setStorageSync('favlist', favlist);
+	},
+	actionSheetChange: function(e) {
+		this.setData({
+			favHidden: true
+		});
 	},
 	timeupdateEvent: function(e) {
 		var t = e.detail.currentTime,
@@ -168,7 +188,8 @@ Page({
 			status: 'play',
 			lyricHidden: true,
 			toastHidden: true,
-			fav: wx.getStorageSync('fav')[id] ? 'liked' : 'like',
+			favHidden: true,
+			fav: wx.getStorageSync('fav')[id] ? 'liked' : 'unlike',
 			mode: this.data.mode || 'loop',
 			currentId: id,
 			currentTime: '0',
@@ -183,7 +204,8 @@ Page({
 				method: 'setCurrentTime',
 				data: 0
 			},
-			lyricList: this.getLyricList(song)
+			lyricList: this.getLyricList(song),
+			favlist: favUtil.getFavList()
 		});
 
 		wx.setNavigationBarTitle({
